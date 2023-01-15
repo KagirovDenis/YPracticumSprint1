@@ -30,15 +30,19 @@ def check_correct_time(time):
     # и значение времени, полученное в аргументе,
     # меньше или равно самому большому значению ключа в словаре,
     # функция вернет False.
-    # Иначе - True 
-    
-    if not storage_data:
+    # Иначе - True
+    print(storage_data)
+    for i in storage_data.keys():
+            print(f'{dt.datetime.strptime(i, FORMAT)} vvvvvss {time}')
+            print(type(time))
+            print(type(dt.datetime.strptime(i, FORMAT)))
+            if dt.datetime.strptime(i, FORMAT) >= time:
+                check = 1
+        
+    if len(storage_data) !=0 and check==1:
         return False
     else:
-        for i in storage_data.keys():
-            print(f'{dt.datetime.strptime(i, FORMAT)} vvvvvss {time}')
-            if dt.datetime.strptime(i, FORMAT) >= time:
-                return False
+        return True
 
 
 def get_step_day(steps):
@@ -130,7 +134,7 @@ def accept_package(data):
     
     # Добавьте новый элемент в словарь storage_data.
     storage_data[data[0]] = data[1]
-    print(storage_data)
+    #print(storage_data)
     # Верните словарь storage_data.
 
 
