@@ -31,19 +31,20 @@ def check_correct_time(time):
     # меньше или равно самому большому значению ключа в словаре,
     # функция вернет False.
     # Иначе - True
-    print(storage_data)
-    for i in storage_data.keys():
-            print(f'{dt.datetime.strptime(i, FORMAT)} vvvvvss {time}')
-            print(type(time))
-            print(type(dt.datetime.strptime(i, FORMAT)))
-            if dt.datetime.strptime(i, FORMAT) >= time:
-                check = 1
-        
-    if len(storage_data) !=0 and check==1:
+    #print(storage_data)
+    #for i in storage_data.keys():
+    #        print(f'{dt.datetime.strptime(i, FORMAT)} vvvvvss {time}')
+    #        print(type(time))
+    #        print(type(dt.datetime.strptime(i, FORMAT)))
+    #        if dt.datetime.strptime(i, FORMAT) >= time:
+    #            check = 1
+    
+    if len(storage_data) == 0:
+        return True
+    elif dt.datetime.strptime(max(storage_data), FORMAT) >= time: 
         return False
     else:
         return True
-
 
 def get_step_day(steps):
     """Получить количество пройденных шагов за этот день."""
@@ -73,9 +74,9 @@ def get_spent_calories(dist, current_time):
     #dt.datetime.strptime(current_time, FORMAT)
 
     time_zero = dt.datetime.strptime('00:00:00', FORMAT)
-    hours = (current_time - time_zero).total_seconds()//60//60
+    hours = (current_time - time_zero).total_seconds()/(60*60)
     mean_speed = dist / hours 
-    minutes = hours * 60
+    minutes = (current_time - time_zero).total_seconds()//60
     spent_calories = (0.035 * WEIGHT + (mean_speed**2 / HEIGHT) * 0.029 * WEIGHT) * minutes
     return spent_calories
     
@@ -98,12 +99,20 @@ def get_achievement(dist):
 
 # Место для функции show_message.
 def show_message(dd, day_steps, dist, spent_calories, achievement):
-    output1 = (f'Время: {dd}.')
+    output1 = (f'Время: {dd.strftime("%H")}:{dd.strftime("%M")}:{dd.strftime("%S")}.')
     output2 = (f'Количество шагов за сегодня: {day_steps:.0f}.')
     output3 = (f'Дистанция составила {dist:.2f} км.')
     output4 = (f'Вы сожгли {spent_calories:.2f} ккал.')
     output5 = (f'{achievement}')
-    print(output1+output2+output3+output4+output5)
+    output6 = (f'''
+{output1}
+{output2}
+{output3}
+{output4}
+{output5}
+''')
+    
+    print(output6)
     
     
     
@@ -118,7 +127,7 @@ def accept_package(data):
     pack_time = dt.datetime.strptime(data[0], FORMAT)
     # Преобразуйте строку с временем в объект типа time.
 
-    if check_correct_time(pack_time):
+    if check_correct_time(pack_time) == False:
     # Если функция проверки значения времени вернет False
         return 'Некорректное значение времени'
 
@@ -129,7 +138,7 @@ def accept_package(data):
     achievement =  get_achievement(dist) # Запишите выбранное мотивирующее сообщение.
     
     
-    show_message(data[0], day_steps, dist, spent_calories, achievement)                                    # Вызовите функцию show_message().
+    show_message(pack_time, day_steps, dist, spent_calories, achievement)                                    # Вызовите функцию show_message().
     
     
     # Добавьте новый элемент в словарь storage_data.
